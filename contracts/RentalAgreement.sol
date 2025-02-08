@@ -14,7 +14,9 @@ contract RentalAgreement {
         uint256 _rentAmount,
         uint256 _securityDeposit,
         uint256 _dueDate
-    ) {
+    ) payable {
+        require(msg.value == _securityDeposit, "Security deposit must be sent");
+
         landlord = msg.sender;
         tenant = _tenant;
         rentAmount = _rentAmount;
@@ -50,3 +52,4 @@ contract RentalAgreement {
         payable(tenant).transfer(securityDeposit);
     }
 }
+
