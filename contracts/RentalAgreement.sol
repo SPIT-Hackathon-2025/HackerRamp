@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.20;
 
 contract RentalAgreement {
     address public landlord;
@@ -7,7 +7,10 @@ contract RentalAgreement {
     uint256 public rentAmount;
     uint256 public securityDeposit;
     uint256 public dueDate;
-    bool public isActive;
+
+    event AgreementSigned(address indexed tenant, uint256 rentAmount, uint256 securityDeposit, uint256 dueDate);
+    event RentPaid(address indexed tenant, uint256 amount);
+    event AgreementTerminated(address indexed tenant);
 
     constructor(
         address _tenant,
@@ -15,41 +18,26 @@ contract RentalAgreement {
         uint256 _securityDeposit,
         uint256 _dueDate
     ) payable {
-        require(msg.value == _securityDeposit, "Security deposit must be sent");
-
+        require(msg.value == _securityDeposit, "Security deposit required");
         landlord = msg.sender;
         tenant = _tenant;
         rentAmount = _rentAmount;
         securityDeposit = _securityDeposit;
         dueDate = _dueDate;
-        isActive = true;
+
+        emit AgreementSigned(_tenant, _rentAmount, _securityDeposit, _dueDate);
     }
 
-    modifier onlyTenant() {
-        require(msg.sender == tenant, "Only the tenant can call this function.");
-        _;
-    }
-
-    modifier onlyLandlord() {
-        require(msg.sender == landlord, "Only the landlord can call this function.");
-        _;
-    }
-
-    function payRent() external payable onlyTenant {
-        require(isActive, "Agreement is not active.");
-        require(msg.value == rentAmount, "Incorrect rent amount.");
-        require(block.timestamp <= dueDate, "Payment is overdue.");
-
+    function payRent() public payable {
+        require(msg.sender == tenant, "Only tenant can pay rent");
+        require(msg.value == rentAmount, "Incorrect rent amount");
         payable(landlord).transfer(msg.value);
+        emit RentPaid(tenant, msg.value);
     }
 
-    function terminateAgreement() external onlyLandlord {
-        isActive = false;
-    }
-
-    function refundDeposit() external onlyLandlord {
-        require(!isActive, "Agreement is still active.");
+    function terminateAgreement() public {
+        require(msg.sender == landlord || msg.sender == tenant, "Only landlord or tenant can terminate");
         payable(tenant).transfer(securityDeposit);
+        emit AgreementTerminated(tenant);
     }
 }
-
