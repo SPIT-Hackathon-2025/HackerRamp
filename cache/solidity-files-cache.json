@@ -1,0 +1,40 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "C:\\Users\\Mansi\\OneDrive\\Desktop\\To-Rent\\contracts\\RentalAgreement.sol": {
+      "lastModificationDate": 1739003931664,
+      "contentHash": "29616de4c79ca2ddbb7585c84a15daba",
+      "sourceName": "contracts/RentalAgreement.sol",
+      "solcConfig": {
+        "version": "0.8.18",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.18"
+      ],
+      "artifacts": [
+        "RentalAgreement"
+      ]
+    }
+  }
+}
