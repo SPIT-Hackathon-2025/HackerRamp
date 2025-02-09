@@ -1,135 +1,92 @@
-// const { ethers } = require("hardhat");
+// const hre = require("hardhat");
 
 // async function main() {
-//     const [deployer, tenant] = await ethers.getSigners(); // Get two accounts
+//   try {
+//     // Get deployer's address
+//     const [deployer] = await hre.ethers.getSigners();
+//     console.log("Deploying contracts with the account:", deployer.address);
 
-//     console.log("Deploying the contract with:", deployer.address);
+//     // Get deployer's balance
+//     const balance = await deployer.provider.getBalance(deployer.address);
+//     console.log("Account balance:", hre.ethers.formatEther(balance));
 
-//     const RentalAgreement = await ethers.getContractFactory("RentalAgreement");
+//     // Contract parameters
+//     const tenant = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"; // Replace with actual tenant address
+//     const arbitrator = "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"; // Replace with actual arbitrator address
+//     const rentAmount = hre.ethers.parseEther("0.1"); // 0.1 ETH per month
+//     const securityDeposit = hre.ethers.parseEther("0.2"); // 0.2 ETH
+//     const rentPeriod = 12; // 12 months
+//     const isAutoDeduct = true;
 
-//     // Define the constructor arguments
-//     const rentAmount = ethers.parseEther("0.1"); // Example: 0.1 ETH
-//     const securityDeposit = ethers.parseEther("0.5"); // Example: 0.5 ETH
-//     const dueDate = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60; // 30 days from now
-
-//     // Deploy with required arguments
-//     const rentalAgreement = await RentalAgreement.deploy(
-//         tenant.address, // Tenant's address
-//         rentAmount,
-//         securityDeposit,
-//         dueDate
+//     // Deploy contract
+//     console.log("Deploying RentalAgreement...");
+//     const RentalAgreement = await hre.ethers.getContractFactory("AdvancedRentalAgreement");
+//     const rental = await RentalAgreement.deploy(
+//       tenant,
+//       arbitrator,
+//       rentAmount,
+//       securityDeposit,
+//       rentPeriod,
+//       isAutoDeduct,
+//       { value: securityDeposit }
 //     );
 
-//     await rentalAgreement.waitForDeployment(); // Wait for deployment to finish
-
-//     console.log("RentalAgreement deployed to:", await rentalAgreement.getAddress());
-// }
-
-// main().catch((error) => {
-//     console.error(error);
-//     process.exitCode = 1;
-// });
-
-
-
-
-
-
-
-
-// const { ethers } = require("hardhat");
-
-// async function main() {
-//     const [deployer, tenant] = await ethers.getSigners();
+//     await rental.waitForDeployment();
     
-//     console.log("Deploying the contract with:", deployer.address);
-//     const RentalAuth = await hre.ethers.getContractFactory("RentalAuth");
-//     const RentalAgreement = await ethers.getContractFactory("RentalAgreement");
+//     const address = await rental.getAddress();
+//     console.log("RentalAgreement deployed to:", address);
 
-//     const rentAmount = ethers.parseEther("0.1");
-//     const securityDeposit = ethers.parseEther("0.5");
-//     const dueDate = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60;
+//     // Log configuration details
+//     console.log("\nContract Configuration:");
+//     console.log("- Landlord:", deployer.address);
+//     console.log("- Tenant:", tenant);
+//     console.log("- Arbitrator:", arbitrator);
+//     console.log("- Rent Amount:", hre.ethers.formatEther(rentAmount), "ETH");
+//     console.log("- Security Deposit:", hre.ethers.formatEther(securityDeposit), "ETH");
+//     console.log("- Rent Period:", rentPeriod, "months");
+//     console.log("- Auto Deduct:", isAutoDeduct);
 
-//     // Deploy contract with security deposit
-//     const rentalAgreement = await RentalAgreement.deploy(
-//         tenant.address,
-//         rentAmount,
-//         securityDeposit,
-//         dueDate,
-//         { value: securityDeposit } // Send the security deposit
-//     );
+//     // Verify contract on Etherscan (for supported networks)
+//     if (process.env.ETHERSCAN_API_KEY && hre.network.name !== "hardhat") {
+//       console.log("\nVerifying contract on Etherscan...");
+//       await hre.run("verify:verify", {
+//         address: address,
+//         constructorArguments: [
+//           tenant,
+//           arbitrator,
+//           rentAmount,
+//           securityDeposit,
+//           rentPeriod,
+//           isAutoDeduct
+//         ],
+//       });
+//     }
 
-
-//         //trying-correct code
-// //     const RentalAuth = await hre.ethers.getContractFactory("RentalAuth");
-// //   const rentalAuth = await RentalAuth.deploy();
-// //   await rentalAgreement.waitForDeployment();
-// //   //await rentalAuth.deployed();
-// //   console.log(`RentalAuth deployed to: ${rentalAuth.address}`);
-
-
-
-
-
-
-// //     console.log("RentalAgreement deployed to:", await rentalAgreement.getAddress());
-
-// //trying 2nd time
-
-// const rentalAuth = await RentalAuth.deploy();
-//     await rentalAuth.waitForDeployment();
-   
-
+//   } catch (error) {
+//     console.error("Deployment failed:", error);
+//     process.exit(1);
+//   }
 // }
 
-
-// const rentalAuthAddress = await rentalAuth.getAddress();
-// console.log("RentalAuth deployed to:", rentalAuthAddress);
-
-
-// main().catch((error) => {
+// main()
+//   .then(() => process.exit(0))
+//   .catch((error) => {
 //     console.error(error);
-//     process.exitCode = 1;
-// });
-
-
-
-
-
+//     process.exit(1);
+//   });
 
 const hre = require("hardhat");
 
 async function main() {
-    const [deployer, tenant] = await hre.ethers.getSigners();
+  // Deploy TorRent contract
+  const torRent = await hre.ethers.deployContract("TorRent");
+  await torRent.waitForDeployment();
+  console.log("TorRent deployed to:", await torRent.getAddress());
 
-    console.log("Deploying contracts with:", deployer.address);
-
-    // Deploy RentalAuth
-    const RentalAuth = await hre.ethers.getContractFactory("RentalAuth");
-    const rentalAuth = await RentalAuth.deploy();
-    await rentalAuth.waitForDeployment();
-    console.log("RentalAuth deployed to:", await rentalAuth.getAddress());
-
-    // Deploy RentalAgreement
-    const RentalAgreement = await hre.ethers.getContractFactory("RentalAgreement");
-    const rentAmount = hre.ethers.parseEther("0.1");
-    const securityDeposit = hre.ethers.parseEther("0.5");
-    const dueDate = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60;
-
-    const rentalAgreement = await RentalAgreement.deploy(
-        tenant.address,
-        rentAmount,
-        securityDeposit,
-        dueDate,
-        { value: securityDeposit }
-    );
-
-    await rentalAgreement.waitForDeployment();
-    console.log("RentalAgreement deployed to:", await rentalAgreement.getAddress());
+  const [deployer, tenant] = await hre.ethers.getSigners();
+  console.log("Deploying contracts with:", deployer.address);
 }
-
 main().catch((error) => {
-    console.error(error);
-    process.exitCode = 1;
+  console.error(error);
+  process.exit(1);
 });
-

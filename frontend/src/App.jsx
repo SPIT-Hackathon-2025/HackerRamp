@@ -767,150 +767,353 @@
 
 //verifycode
 
-import React, { useState } from "react";
-import axios from "axios";
-import { ethers } from "ethers";
-import "./App.css";
+// import React, { useState } from "react";
+// import axios from "axios";
+// import { ethers } from "ethers";
+// import "./App.css";
 
-const contractAddress = "0xYourDeployedContractAddress";
-const contractABI = [ /* ABI from compilation */ ];
+// const contractAddress = "0xYourDeployedContractAddress";
+// const contractABI = [ /* ABI from compilation */ ];
 
-function App() {
-  const [aadhaar, setAadhaar] = useState("");
-  const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
-  const [anonID, setAnonID] = useState(null);
-  const [provider, setProvider] = useState(null);
-  const [signer, setSigner] = useState(null);
-  const [contract, setContract] = useState(null);
-  const [otpSent, setOtpSent] = useState(false);
+// function App() {
+//   const [aadhaar, setAadhaar] = useState("");
+//   const [phone, setPhone] = useState("");
+//   const [otp, setOtp] = useState("");
+//   const [anonID, setAnonID] = useState(null);
+//   const [provider, setProvider] = useState(null);
+//   const [signer, setSigner] = useState(null);
+//   const [contract, setContract] = useState(null);
+//   const [otpSent, setOtpSent] = useState(false);
 
-  // 📌 Request OTP from Backend
-  const requestOTP = async () => {
-    if (!aadhaar || !phone) {
-      alert("Please enter Aadhaar and Phone Number!");
-      return;
-    }
+//   // 📌 Request OTP from Backend
+//   const requestOTP = async () => {
+//     if (!aadhaar || !phone) {
+//       alert("Please enter Aadhaar and Phone Number!");
+//       return;
+//     }
 
-    try {
-      const res = await axios.post("http://localhost:5000/request-otp", {
-        aadhaarNumber: aadhaar,
-        phone: phone
-      });
+//     try {
+//       const res = await axios.post("http://localhost:5000/request-otp", {
+//         aadhaarNumber: aadhaar,
+//         phone: phone
+//       });
 
-      if (res.data.success) {
-        alert("OTP sent! Check backend console for the OTP.");
-        setOtpSent(true);
-      } else {
-        alert("Error requesting OTP.");
-      }
-    } catch (err) {
-      console.error("Request OTP Error:", err);
-      alert("Failed to send OTP. Try again.");
-    }
-  };
+//       if (res.data.success) {
+//         alert("OTP sent! Check backend console for the OTP.");
+//         setOtpSent(true);
+//       } else {
+//         alert("Error requesting OTP.");
+//       }
+//     } catch (err) {
+//       console.error("Request OTP Error:", err);
+//       alert("Failed to send OTP. Try again.");
+//     }
+//   };
 
-  // 📌 Verify OTP and Get Anonymous ID
-  const verifyAadhaar = async () => {
-    if (!otp) {
-      alert("Please enter the OTP!");
-      return;
-    }
+//   // 📌 Verify OTP and Get Anonymous ID
+//   const verifyAadhaar = async () => {
+//     if (!otp) {
+//       alert("Please enter the OTP!");
+//       return;
+//     }
 
-    try {
-      const res = await axios.post("http://localhost:5000/verify-otp", {
-        aadhaarNumber: aadhaar,
-        phone: phone,
-        otp: otp
-      });
+//     try {
+//       const res = await axios.post("http://localhost:5000/verify-otp", {
+//         aadhaarNumber: aadhaar,
+//         phone: phone,
+//         otp: otp
+//       });
 
-      if (res.data.success) {
-        setAnonID(res.data.anonymousID);
-        alert("Aadhaar Verified! Anonymous ID Generated.");
-      } else {
-        alert("Invalid OTP. Try again.");
-      }
-    } catch (err) {
-      console.error("Verify OTP Error:", err);
-      alert("OTP verification failed.");
-    }
-  };
+//       if (res.data.success) {
+//         setAnonID(res.data.anonymousID);
+//         alert("Aadhaar Verified! Anonymous ID Generated.");
+//       } else {
+//         alert("Invalid OTP. Try again.");
+//       }
+//     } catch (err) {
+//       console.error("Verify OTP Error:", err);
+//       alert("OTP verification failed.");
+//     }
+//   };
 
-  // 📌 Connect MetaMask
-  const connectWallet = async () => {
-    if (window.ethereum) {
-      const web3Provider = new ethers.BrowserProvider(window.ethereum);
-      await window.ethereum.request({ method: "eth_requestAccounts" });
-      const web3Signer = await web3Provider.getSigner();
-      const rentalContract = new ethers.Contract(contractAddress, contractABI, web3Signer);
+//   // 📌 Connect MetaMask
+//   const connectWallet = async () => {
+//     if (window.ethereum) {
+//       const web3Provider = new ethers.BrowserProvider(window.ethereum);
+//       await window.ethereum.request({ method: "eth_requestAccounts" });
+//       const web3Signer = await web3Provider.getSigner();
+//       const rentalContract = new ethers.Contract(contractAddress, contractABI, web3Signer);
 
-      setProvider(web3Provider);
-      setSigner(web3Signer);
-      setContract(rentalContract);
-    } else {
-      alert("MetaMask is required!");
-    }
-  };
+//       setProvider(web3Provider);
+//       setSigner(web3Signer);
+//       setContract(rentalContract);
+//     } else {
+//       alert("MetaMask is required!");
+//     }
+//   };
 
-  // 📌 Register on Blockchain
-  const registerOnBlockchain = async () => {
-    if (!contract) return alert("Connect MetaMask first!");
-    try {
-      const tx = await contract.verifyUser(anonID);
-      await tx.wait();
-      alert("User Registered on Blockchain!");
-    } catch (err) {
-      console.error(err);
-    }
-  };
+//   // 📌 Register on Blockchain
+//   const registerOnBlockchain = async () => {
+//     if (!contract) return alert("Connect MetaMask first!");
+//     try {
+//       const tx = await contract.verifyUser(anonID);
+//       await tx.wait();
+//       alert("User Registered on Blockchain!");
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   };
 
+//   return (
+//     <div style={{ textAlign: "center", padding: "20px" }}>
+//       <h1>Aadhaar Anonymous Blockchain Login</h1>
+
+//       <input 
+//         type="text" 
+//         placeholder="Enter Aadhaar Number" 
+//         value={aadhaar} 
+//         onChange={(e) => setAadhaar(e.target.value)} 
+//       />
+      
+//       <input 
+//         type="text" 
+//         placeholder="Enter Phone Number" 
+//         value={phone} 
+//         onChange={(e) => setPhone(e.target.value)} 
+//       />
+      
+//       <button onClick={requestOTP} disabled={otpSent}>
+//         {otpSent ? "OTP Sent (Check Console)" : "Request OTP"}
+//       </button>
+
+//       {otpSent && (
+//         <>
+//           <input 
+//             type="text" 
+//             placeholder="Enter OTP" 
+//             value={otp} 
+//             onChange={(e) => setOtp(e.target.value)} 
+//           />
+//           <button onClick={verifyAadhaar}>Verify Aadhaar</button>
+//         </>
+//       )}
+
+//       {anonID && (
+//         <div>
+//           <p>Anonymous ID: <b>{anonID}</b></p>
+//           <button onClick={connectWallet}>Connect MetaMask</button>
+//           <button onClick={registerOnBlockchain}>Register on Blockchain</button>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
+// export default App;
+
+
+
+// import React, { useState } from 'react';
+// import { ethers } from 'ethers';
+// import AadhaarLogin from './AadhaarLogin';
+// import axios from 'axios';
+
+// // Replace with your contract address and ABI
+// const contractAddress = "0xYourDeployedContractAddress";
+// const contractABI = [ /* Your contract ABI here */ ];
+
+// function App() {
+//   const [provider, setProvider] = useState(null);
+//   const [signer, setSigner] = useState(null);
+//   const [contract, setContract] = useState(null);
+
+//   // Handle blockchain registration
+//   const handleBlockchainRegistration = async (anonymousId) => {
+//     try {
+//       if (!window.ethereum) {
+//         alert("Please install MetaMask!");
+//         return;
+//       }
+
+//       // Connect to MetaMask
+//       const web3Provider = new ethers.BrowserProvider(window.ethereum);
+//       await window.ethereum.request({ method: "eth_requestAccounts" });
+//       const web3Signer = await web3Provider.getSigner();
+//       const rentalContract = new ethers.Contract(
+//         contractAddress, 
+//         contractABI, 
+//         web3Signer
+//       );
+
+//       setProvider(web3Provider);
+//       setSigner(web3Signer);
+//       setContract(rentalContract);
+
+//       // Register user on blockchain
+//       const tx = await rentalContract.verifyUser(anonymousId);
+//       await tx.wait();
+//       alert("Successfully registered on blockchain!");
+      
+//     } catch (error) {
+//       console.error("Blockchain registration error:", error);
+//       alert("Failed to register on blockchain. Please try again.");
+//     }
+//   };
+
+//   // Handle OTP request
+//   const handleOTPRequest = async (aadhaarNumber, phone) => {
+//     try {
+//       const response = await axios.post("http://localhost:5000/request-otp", {
+//         aadhaarNumber,
+//         phone
+//       });
+
+//       if (response.data.success) {
+//         return { success: true, message: "OTP sent successfully!" };
+//       } else {
+//         return { success: false, message: "Failed to send OTP." };
+//       }
+//     } catch (error) {
+//       console.error("OTP request error:", error);
+//       return { success: false, message: "Error sending OTP. Please try again." };
+//     }
+//   };
+
+//   // Handle OTP verification
+//   const handleOTPVerification = async (aadhaarNumber, phone, otp) => {
+//     try {
+//       const response = await axios.post("http://localhost:5000/verify-otp", {
+//         aadhaarNumber,
+//         phone,
+//         otp
+//       });
+
+//       if (response.data.success) {
+//         return {
+//           success: true,
+//           anonymousId: response.data.anonymousID,
+//           message: "Verification successful!"
+//         };
+//       } else {
+//         return { success: false, message: "Invalid OTP." };
+//       }
+//     } catch (error) {
+//       console.error("OTP verification error:", error);
+//       return { success: false, message: "Verification failed. Please try again." };
+//     }
+//   };
+
+//   return (
+//     <div className="min-h-screen">
+//       <AadhaarLogin
+//         onOTPRequest={handleOTPRequest}
+//         onOTPVerify={handleOTPVerification}
+//         onBlockchainRegister={handleBlockchainRegistration}
+//       />
+//     </div>
+//   );
+// }
+
+// export default App;
+
+
+
+// with routing
+// 
+
+
+//new 
+
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import TenantDashboard from "./assets/components/TenantDashboard";
+import LandlordDashboard from "./assets/components/LandloardDashboard";
+import LandingPage from "./LandingPage";
+import AadhaarLogin from './AadhaarLogin';
+
+const App = () => {
   return (
-    <div style={{ textAlign: "center", padding: "20px" }}>
-      <h1>Aadhaar Anonymous Blockchain Login</h1>
+    <Router>
+      <div className="min-h-screen bg-gray-100 p-6">
+        {/* Navigation Bar */}
+        <nav className="bg-white shadow-md p-4 mb-6 rounded-lg flex justify-center space-x-6">
+          <Link to="/" className="text-blue-600 font-semibold hover:underline">Tenant Dashboard</Link>
+          <Link to="/landlord" className="text-blue-600 font-semibold hover:underline">Landlord Dashboard</Link>
+        </nav>
 
-      <input 
-        type="text" 
-        placeholder="Enter Aadhaar Number" 
-        value={aadhaar} 
-        onChange={(e) => setAadhaar(e.target.value)} 
-      />
-      
-      <input 
-        type="text" 
-        placeholder="Enter Phone Number" 
-        value={phone} 
-        onChange={(e) => setPhone(e.target.value)} 
-      />
-      
-      <button onClick={requestOTP} disabled={otpSent}>
-        {otpSent ? "OTP Sent (Check Console)" : "Request OTP"}
-      </button>
-
-      {otpSent && (
-        <>
-          <input 
-            type="text" 
-            placeholder="Enter OTP" 
-            value={otp} 
-            onChange={(e) => setOtp(e.target.value)} 
-          />
-          <button onClick={verifyAadhaar}>Verify Aadhaar</button>
-        </>
-      )}
-
-      {anonID && (
-        <div>
-          <p>Anonymous ID: <b>{anonID}</b></p>
-          <button onClick={connectWallet}>Connect MetaMask</button>
-          <button onClick={registerOnBlockchain}>Register on Blockchain</button>
-        </div>
-      )}
-    </div>
+        {/* Routing Configuration */}
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/landlord" element={<LandlordDashboard />} />
+          <Route path="/tenant" element={<TenantDashboard/>}/>
+        </Routes>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
+// import React, { useState } from 'react';
+// import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+// import AadhaarLogin from './AadhaarLogin';
+// import LandingPage from './LandingPage';
+// import Dashboard from './Dashboard';  // Import Dashboard component
+// import { ethers } from 'ethers';
+// import axios from 'axios';
 
+// const contractAddress = "0xYourDeployedContractAddress";
+// const contractABI = [ /* Your contract ABI here */ ];
+
+// function App() {
+//   const [provider, setProvider] = useState(null);
+//   const [signer, setSigner] = useState(null);
+//   const [contract, setContract] = useState(null);
+
+//   const handleBlockchainRegistration = async (anonymousId, navigate) => {
+//     try {
+//       if (!window.ethereum) {
+//         alert("Please install MetaMask!");
+//         return;
+//       }
+
+//       const web3Provider = new ethers.BrowserProvider(window.ethereum);
+//       await window.ethereum.request({ method: "eth_requestAccounts" });
+//       const web3Signer = await web3Provider.getSigner();
+//       const rentalContract = new ethers.Contract(contractAddress, contractABI, web3Signer);
+
+//       setProvider(web3Provider);
+//       setSigner(web3Signer);
+//       setContract(rentalContract);
+
+//       const tx = await rentalContract.verifyUser(anonymousId);
+//       await tx.wait();
+//       alert("Successfully registered on blockchain!");
+
+//       // Navigate to Dashboard after successful registration
+//       navigate('/dashboard');
+      
+//     } catch (error) {
+//       console.error("Blockchain registration error:", error);
+//       alert("Failed to register on blockchain. Please try again.");
+//     }
+//   };
+
+//   return (
+//     <Router>
+//       <Routes>
+//         <Route path="/" element={<LandingPage />} />
+//         <Route path="/aadhaar-login" element={<AadhaarLogin 
+//           onOTPRequest={handleOTPRequest}
+//           onOTPVerify={handleOTPVerification}
+//           onBlockchainRegister={handleBlockchainRegistration} 
+//         />} />
+//         <Route path="/dashboard" element={<Dashboard />} />  
+//       </Routes>
+//     </Router>
+//   );
+// }
+
+// export default App;
 
 
 
